@@ -50,7 +50,7 @@ print("MC (control variate) estimator : ", np.mean(L_var_red))
 print("MC (control variate) estimated variance : ", (1/n) * np.var(L_var_red))
 
 # (1-alpha) % confidence interval.
-alpha = 0.05
+alpha = 0.1
 z = scipy.stats.norm.ppf(1-alpha/2)
 inf = np.mean(L_var_red) - (z/np.sqrt(n)) * np.var(L_var_red)
 sup = np.mean(L_var_red) + (z/np.sqrt(n)) * np.var(L_var_red)
@@ -103,3 +103,46 @@ z = scipy.stats.norm.ppf(1-alpha/2)
 inf = 0.5 * np.mean(L_anti + L_anti_trans) - (z/np.sqrt(n)) * np.var(L_var_red)
 sup = 0.5 * np.mean(L_anti + L_anti_trans) + (z/np.sqrt(n)) * np.var(L_var_red)
 print("({})% confidence interval : ".format((1-alpha)*100),"[",inf,",", sup, "]")
+
+
+# PROBLEM 4
+mean = np.array([0,0])
+cov = np.array([[1,-0.7],[-0.7,1]])
+# Simluations
+n = 100000
+X_Y = np.random.multivariate_normal(mean, cov, size=n)
+# np.cov(X_Y[:,0], X_Y[:,1])
+# Plots
+plt.scatter(x=X_Y[:,0], y=X_Y[:,1])
+plt.vlines(3, ymin=3, ymax = 8, color = "red", linestyles='solid')
+plt.hlines(3, xmin=3, xmax = 8, color = "red")
+plt.title("n = {} simulations".format(n))
+plt.show()
+
+# zone = [(x,y) for x,y in X_Y if x >= 1 and y >= 1]
+# while len(zone) == 0 :
+#     X_Y = np.random.multivariate_normal(mean, cov, size=n)
+#     zone = [(x, y) for x, y in X_Y if x > 3 and y > 3]
+
+
+# Importance Sampling
+n = 100000
+mean_2 = np.array([3,3])
+Z = np.random.multivariate_normal(mean_2, cov, size=n)
+f = scipy.stats.multivariate_normal(mean=[0,0], cov=[[1,-0.7],[-0.7,1]])
+g = scipy.stats.multivariate_normal(mean=[3,3], cov=[[1,-0.7],[-0.7,1]])
+
+# Plots
+plt.scatter(x=Z[:,0], y=Z[:,1])
+plt.vlines(3, ymin=3, ymax = 8, color = "red", linestyles='solid')
+plt.hlines(3, xmin=3, xmax = 8, color = "red")
+plt.title("n = {} simulations".format(n))
+plt.show()
+
+ratio = [] # only if Z belongs to A
+for i in range(n) :
+    if Z[i][0] >= 3 and Z[i][1] > 3 :
+        ratio.append(f.pdf(Z[i]) / g.pdf(Z[i]))
+ratio = np.array(ratio)
+
+print("p_n = ", np.mean(ratio))
