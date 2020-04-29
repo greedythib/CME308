@@ -45,15 +45,15 @@ cov_vec = np.array([np.cov(L,C[0,])[0,1],np.cov(L,C[1,])[0,1],np.cov(L,C[2,])[0,
 Sigma = np.cov([C[0,],C[1,],C[2,],C[3,],C[4,],C[5,]])
 lambda_star = np.dot(np.linalg.inv(Sigma), cov_vec)
 
-L_var_red = L - np.dot(lambda_star, C)
-print("MC (control variate) estimator : ", np.mean(L_var_red))
-print("MC (control variate) estimated variance : ", (1/n) * np.var(L_var_red))
+L_CV = L - np.dot(lambda_star, C)
+print("MC (control variate) estimator : ", np.mean(L_CV))
+print("MC (control variate) estimated variance : ", (1/n) * np.var(L_CV))
 
 # (1-alpha) % confidence interval.
 alpha = 0.1
 z = scipy.stats.norm.ppf(1-alpha/2)
-inf = np.mean(L_var_red) - (z/np.sqrt(n)) * np.var(L_var_red)
-sup = np.mean(L_var_red) + (z/np.sqrt(n)) * np.var(L_var_red)
+inf = np.mean(L_CV) - (z/np.sqrt(n)) * np.var(L_CV)
+sup = np.mean(L_var_red) + (z/np.sqrt(n)) * np.var(L_CV)
 print("({})% confidence interval : ".format((1-alpha)*100),"[",inf,",", sup, "]")
 
 # 3 - MC Antithetic Variates
