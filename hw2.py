@@ -5,7 +5,7 @@ import statsmodels
 import scipy.stats
 
 # PROBLEM 3
-n = 1000
+n = 10000
 lambda_1 = 1
 lambda_2 = 1 / 2
 lambda_3 = 1 / 3
@@ -53,10 +53,11 @@ print("MC (control variate) estimated variance : ", (1/n) * np.var(L_CV))
 alpha = 0.1
 z = scipy.stats.norm.ppf(1-alpha/2)
 inf = np.mean(L_CV) - (z/np.sqrt(n)) * np.var(L_CV)
-sup = np.mean(L_var_red) + (z/np.sqrt(n)) * np.var(L_CV)
+sup = np.mean(L_CV) + (z/np.sqrt(n)) * np.var(L_CV)
 print("({})% confidence interval : ".format((1-alpha)*100),"[",inf,",", sup, "]")
 
 # 3 - MC Antithetic Variates
+# TODO : Better to sample 6 uniforms at each simulation
 U = np.random.uniform(0,1,n)
 
 Z1_bis = [] ; Z1_bis_trans = []
