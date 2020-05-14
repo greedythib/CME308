@@ -74,3 +74,29 @@ print(" Prob(mu_n - mu_estimate < {}) = {}".format(y, count / m))
 
 print(" Parametric Boostrap {}% confidence interval : [{},{}]".format(1 - delta, -x + np.mean(bootstrap_estimates),
                                                                       - y + np.mean(bootstrap_estimates)))
+
+# Problem 4
+## Posterior distribution
+X = np.array([6.00, 4.82, 3.35, 2.38, 3.59, 4.12, 4.98, 2.69, 6.24, 6.77,
+              6.22, 5.42, 5.42, 3.10, 4.65, 4.24, 4.53, 4.62, 5.36, 2.57])
+
+Sigma = (1 + (0.5) * np.sum(X[0:19]**2))**-1
+X_i_1 = X[0:19]
+X_i = X[1:20]
+Mu = Sigma * ( (0.5) * np.sum(X_i_1*(X_i-2)) + 0.5)
+print("rho*|X follows a normal distribution with mean = {} and variance = {}".format(Mu, Sigma))
+
+## Prob(X_23 > 4)
+n = 100000
+X23_estimates = []
+count = 0
+for i in range(n) :
+    rho = np.random.normal(Mu, Sigma, 1)
+    epsilon = np.random.normal(0,2,3)
+    X23 = (rho**3) * X[19] + 2 * (1 + rho + rho**2) + epsilon[0] + epsilon[1] * rho + epsilon[2] * rho**2
+    X23_estimates.append(X23)
+    if X23 >= 4 :
+        count += 1
+
+print("X23 estimate = {}".format(np.mean(X23_estimates)))
+print("Prob(X_23 > 4) = {}".format(count/n))
